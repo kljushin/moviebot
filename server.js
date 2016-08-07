@@ -14,10 +14,16 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
 
+// Serve a static web page
+server.get(/.*/, restify.serveStatic({
+    'directory': '.',
+    'default': 'index.html'
+}));
+
 // Create chat bot
 var connector = new builder.ChatConnector({
-    appId: process.env.BOTFRAMEWORK_APPID,
-    appSecret: process.env.BOTFRAMEWORK_APPSECRET
+    appId: process.env.MICROSOFT_APP_ID,
+    appSecret: process.env.MICROSOFT_APP_PASSWORD
 });
 
 var movieList = {
