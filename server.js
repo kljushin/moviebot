@@ -112,12 +112,13 @@ bot.dialog('/help', [
 bot.dialog('/greeting',[
     function (session) {
         // Send a greeting
-        var card = new builder.HeroCard(session)
+      /*  var card = new builder.HeroCard(session)
             .title("Movie Ticket Seller Bot")
             .text("Hi... Can I help you buy the tickets?");
 
         var msg = new builder.Message(session).attachments([card]);
-        session.endDialog(msg);
+        session.endDialog(msg);*/
+      session.endDialog("Movie Ticket Seller Bot \n\n Hi... Can I help you buy the tickets?")
     }
 ]);
 
