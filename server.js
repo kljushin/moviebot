@@ -21,13 +21,6 @@ var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 
 //=========================================================
-// Bots Middleware
-//=========================================================
-
-// Anytime the major version is incremented any existing conversations will be restarted.
-bot.use(builder.Middleware.dialogVersion({ version: 1.0, resetCommand: /^reset/i }));
-
-//=========================================================
 // Bots Global Actions
 //=========================================================
 
@@ -37,7 +30,7 @@ bot.beginDialogAction('help', '/help', { matches: /^help/i });
 //=========================================================
 // Bots Dialogs
 //=========================================================
-
+var buttonStyle = builder.ListStyle['button'];
 var movieList = {
     'Star Trek Beyond': {
         subtitle: 'The USS Enterprise crew explores the furthest reaches of uncharted space, where they encounter a new ruthless enemy who puts them and everything the Federation stands for to the test.',
@@ -120,7 +113,7 @@ bot.dialog('/movieSelect', [
         var msg = new builder.Message(session)
             .attachments( movieCards );
 
-        builder.Prompts.choice(session, msg, movieList).button;
+        builder.Prompts.choice(session, msg, movieList, {listStyle: buttonStyle});
     },
     function (session, results) {
         session.userData.movie = results.response.entity;
@@ -141,7 +134,6 @@ bot.dialog('/movieTimeSelect', [
         var card = movieCard(session, session.userData.movie);
         var msg = new builder.Message(session).attachments([card]);
         var movieTime = movieList[session.userData.movie].sessionTime.concat();
-        console.log(session);
         if(!session.userData.movieTime){
             movieTime = movieList[session.userData.movie].sessionTime.concat(['SELECT ANOTHER MOVIE']);
         }
@@ -149,7 +141,7 @@ bot.dialog('/movieTimeSelect', [
         //session.userData.movieTime = undefined;
 
         session.send(msg);
-        builder.Prompts.choice(session, "Select movie session time, please", movieTime).button;
+        builder.Prompts.choice(session, "Select movie session time, please", movieTime, {listStyle: buttonStyle});
     },
     function (session, results) {
         if(results.response.entity === 'SELECT ANOTHER MOVIE') {
@@ -184,7 +176,7 @@ bot.dialog('/contactName',[
         if(results.response) {
             session.userData.name = results.response;
             var msg = results.response + ' is your name. Right?';
-            builder.Prompts.confirm(session,msg);
+            builder.Prompts.confirm(session,msg, {listStyle: buttonStyle});
         }
     },
     function (session, results) {
@@ -205,7 +197,7 @@ bot.dialog('/contactEmail',[
         if(results.response) {
             session.userData.email = results.response;
             var msg = results.response + ' is your correct email?';
-            builder.Prompts.confirm(session,msg);
+            builder.Prompts.confirm(session,msg, {listStyle: buttonStyle});
         }
     },
     function (session, results) {
@@ -220,7 +212,7 @@ bot.dialog('/contactEmail',[
 bot.dialog('/orderConfirm',[
     function (session) {
         var order = "Your order\n\nContact name: " + session.userData.name + "\n\nemail: " + session.userData.email + "\n\nMovie: " + session.userData.movie + "\n\nmovie session time: " + session.userData.movieTime + "\n\ntickets: " + session.userData.tickets;
-        builder.Prompts.choice(session, order, "Change movie|Change time|Change ticket amount|Change contact name|Another email|Confirm").button;
+        builder.Prompts.choice(session, order, "Change movie|Change time|Change ticket amount|Change contact name|Another email|Confirm", {listStyle: buttonStyle});
     },
     function (session,results) {
         switch (results.response.entity){
