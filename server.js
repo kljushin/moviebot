@@ -57,6 +57,9 @@ var movieList = {
 
 bot.dialog('/', [
 
+    function (session, results) {
+        session.beginDialog('/greeting');
+    },
     function (session,results) {
         // Send a greeting and show help.
         /*var card = new builder.HeroCard(session)
@@ -66,7 +69,6 @@ bot.dialog('/', [
         var msg = new builder.Message(session).attachments([card]);
         session.send(msg);*/
         session.beginDialog('/help');
-
     },
     function (session, results) {
         session.beginDialog('/movieSelect');
@@ -104,6 +106,18 @@ bot.dialog('/', [
 bot.dialog('/help', [
     function (session) {
         session.endDialog("Global commands that are available anytime:\n\n* bye - End this conversation.\n* help - Displays these commands.");
+    }
+]);
+
+bot.dialog('/greeting',[
+    function (session) {
+        // Send a greeting
+        var card = new builder.HeroCard(session)
+            .title("Movie Ticket Seller Bot")
+            .text("Hi... Can I help you buy the tickets?");
+
+        var msg = new builder.Message(session).attachments([card]);
+        session.endDialog(msg);
     }
 ]);
 
