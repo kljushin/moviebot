@@ -58,18 +58,14 @@ var movieList = {
 bot.dialog('/', [
 
     function (session, results) {
+        session.userData = {};
         session.beginDialog('/greeting');
     },
     function (session,results) {
 
-        console.log('SESSION: ',session);
-        // Send a greeting and show help.
-        /*var card = new builder.HeroCard(session)
-            .title("Movie Ticket Seller Bot")
-            .text("Hi... Can I help you buy the tickets?");
+        var tmp = session.message;
+        fs.writeFileSync('./session.json', JSON.stringify(tmp, null, 4));
 
-        var msg = new builder.Message(session).attachments([card]);
-        session.send(msg);*/
         session.beginDialog('/help');
     },
     function (session, results) {
@@ -113,13 +109,6 @@ bot.dialog('/help', [
 
 bot.dialog('/greeting',[
     function (session) {
-        // Send a greeting
-      /*  var card = new builder.HeroCard(session)
-            .title("Movie Ticket Seller Bot")
-            .text("Hi... Can I help you buy the tickets?");
-
-        var msg = new builder.Message(session).attachments([card]);
-        session.endDialog(msg);*/
       session.endDialog("Movie Ticket Seller Bot \n\n Hi... Can I help you buy the tickets?")
     }
 ]);
@@ -155,8 +144,6 @@ bot.dialog('/movieTimeSelect', [
         if(!session.userData.movieTime){
             movieTime = movieList[session.userData.movie].sessionTime.concat(['SELECT ANOTHER MOVIE']);
         }
-
-        //session.userData.movieTime = undefined;
 
         session.send(msg);
         builder.Prompts.choice(session, "Select movie session time, please", movieTime, {listStyle: buttonStyle});
