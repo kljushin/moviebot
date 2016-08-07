@@ -1,5 +1,6 @@
 var restify = require('restify');
 var builder = require('botbuilder');
+var fs = require('fs');
 
 //=========================================================
 // Bot Setup
@@ -30,7 +31,7 @@ bot.use(builder.Middleware.dialogVersion({ version: 1.0, resetCommand: /^reset/i
 // Bots Global Actions
 //=========================================================
 
-bot.endConversationAction('goodbye', 'Goodbye :)', { matches: /^goodbye/i });
+bot.endConversationAction('bye', 'Goodbye :)', { matches: /^bye/i });
 bot.beginDialogAction('help', '/help', { matches: /^help/i });
 
 //=========================================================
@@ -119,7 +120,7 @@ bot.dialog('/movieSelect', [
         var msg = new builder.Message(session)
             .attachments( movieCards );
 
-        builder.Prompts.choice(session, msg, movieList);
+        builder.Prompts.choice(session, msg, movieList).button;
     },
     function (session, results) {
         session.userData.movie = results.response.entity;
@@ -148,7 +149,7 @@ bot.dialog('/movieTimeSelect', [
         //session.userData.movieTime = undefined;
 
         session.send(msg);
-        builder.Prompts.choice(session, "Select movie session time, please", movieTime);
+        builder.Prompts.choice(session, "Select movie session time, please", movieTime).button;
     },
     function (session, results) {
         if(results.response.entity === 'SELECT ANOTHER MOVIE') {
@@ -219,7 +220,7 @@ bot.dialog('/contactEmail',[
 bot.dialog('/orderConfirm',[
     function (session) {
         var order = "Your order\n\nContact name: " + session.userData.name + "\n\nemail: " + session.userData.email + "\n\nMovie: " + session.userData.movie + "\n\nmovie session time: " + session.userData.movieTime + "\n\ntickets: " + session.userData.tickets;
-        builder.Prompts.choice(session, order, "Change movie|Change time|Change ticket amount|Change contact name|Another email|Confirm");
+        builder.Prompts.choice(session, order, "Change movie|Change time|Change ticket amount|Change contact name|Another email|Confirm").button;
     },
     function (session,results) {
         switch (results.response.entity){
@@ -268,3 +269,9 @@ function movieCard(session, movie) {
         .subtitle(movieList[movie].subtitle)
         .images([ builder.CardImage.create(session, movieList[movie].poster)])
 }
+
+// Serve a static web page
+server.get(/.*/, restify.serveStatic({
+    'directory': '.',
+    'default': 'index.html'
+}));
