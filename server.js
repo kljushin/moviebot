@@ -56,17 +56,18 @@ var movieList = {
 
 
 bot.dialog('/', [
-   /* function (session,results) {
+
+    function (session,results) {
         // Send a greeting and show help.
-        var card = new builder.HeroCard(session)
+        /*var card = new builder.HeroCard(session)
             .title("Movie Ticket Seller Bot")
             .text("Hi... Can I help you buy the tickets?");
 
         var msg = new builder.Message(session).attachments([card]);
-        session.send(msg);
+        session.send(msg);*/
         session.beginDialog('/help');
 
-    },*/
+    },
     function (session, results) {
         session.beginDialog('/movieSelect');
     },
