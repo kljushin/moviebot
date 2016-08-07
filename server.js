@@ -59,13 +59,10 @@ bot.dialog('/', [
 
     function (session, results) {
         session.userData = {};
+        session.userData.name = session.message.user.name;
         session.beginDialog('/greeting');
     },
     function (session,results) {
-
-        var tmp = session.message;
-        fs.writeFileSync('./session.json', JSON.stringify(tmp, null, 4));
-
         session.beginDialog('/help');
     },
     function (session, results) {
@@ -109,7 +106,9 @@ bot.dialog('/help', [
 
 bot.dialog('/greeting',[
     function (session) {
-      session.endDialog("Movie Ticket Seller Bot \n\n Hi... Can I help you buy the tickets?")
+      var msg = "Movie Ticket Seller Bot \n\n Hi, " + session.userData.name + "\n\nCan I help you buy the tickets?";
+
+      session.endDialog(msg);
     }
 ]);
 
@@ -174,13 +173,20 @@ bot.dialog('/ticketChoice',[
 
 bot.dialog('/contactName',[
     function (session) {
-        session.userData.name = undefined;
-        builder.Prompts.text(session,"Tell us your name, please");
+        var msg = 'Do you want change contact name, ' + session.userData.name + '?';
+        builder.Prompts.confirm(session, msg, {listStyle: buttonStyle});
+    },
+    function (session, results) {
+        if(results.response){
+            builder.Prompts.text(session,"Tell us your contact name, please");
+        } else {
+            session.endDialog();
+        }
     },
     function (session, results) {
         if(results.response) {
             session.userData.name = results.response;
-            var msg = results.response + ' is your name. Right?';
+            var msg = results.response + ' is your contact name. Right?';
             builder.Prompts.confirm(session,msg, {listStyle: buttonStyle});
         }
     },
@@ -195,8 +201,9 @@ bot.dialog('/contactName',[
 
 bot.dialog('/contactEmail',[
     function (session) {
+        var msg = session.userData.name + ", tell us your contact email";
         session.userData.email = undefined;
-        builder.Prompts.text(session,"Tell us your contact email");
+        builder.Prompts.text(session, msg);
     },
     function (session, results) {
         if(results.response) {
