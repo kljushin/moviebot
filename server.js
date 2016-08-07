@@ -56,7 +56,7 @@ var movieList = {
 
 
 bot.dialog('/', [
-    function (session) {
+    function (session,results) {
         // Send a greeting and show help.
         var card = new builder.HeroCard(session)
             .title("Movie Ticket Seller Bot")
