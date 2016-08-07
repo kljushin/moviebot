@@ -30,6 +30,7 @@ bot.beginDialogAction('help', '/help', { matches: /^help/i });
 //=========================================================
 // Bots Dialogs
 //=========================================================
+
 var buttonStyle = builder.ListStyle['button'];
 var movieList = {
     'Star Trek Beyond': {
@@ -83,7 +84,7 @@ bot.dialog('/', [
     },
     function (session, results) {
         var time = new Date();
-        var msg = session.userData.name + ', your order accepted. We will send you order details on ' + session.userData.email +'. Have a nice day. Bye!'
+        var msg = session.userData.name + ', your order accepted. We will send you order details on ' + session.userData.email +'. Have a nice day. Bye!';
         var confirmedOder = {
             OrderTime:      time,
             userName:       session.userData.name,
@@ -95,7 +96,7 @@ bot.dialog('/', [
         fs.appendFileSync('./orders.json', JSON.stringify(confirmedOder, null, 4));
         session.userData = {};
         session.send(msg);
-        session.endDialog();
+        session.endConversation();
     }
 ]);
 
@@ -106,7 +107,6 @@ bot.dialog('/help', [
 ]);
 
 bot.dialog('/movieSelect', [
-
     function (session) {
         session.userData.movie = undefined;
         var movieCards = movieCardsBuilder(session,movieList);
