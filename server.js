@@ -61,6 +61,8 @@ bot.dialog('/', [
         session.beginDialog('/greeting');
     },
     function (session,results) {
+
+        console.log('SESSION: ',session);
         // Send a greeting and show help.
         /*var card = new builder.HeroCard(session)
             .title("Movie Ticket Seller Bot")
